@@ -5,6 +5,7 @@
     tags: string[];
     title: string;
     date: string;
+    author: string;
 
     constructor(category: string, title: string, name: string = "", tags: string[] = [])
     {

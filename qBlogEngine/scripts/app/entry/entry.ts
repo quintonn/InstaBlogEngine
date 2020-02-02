@@ -20,6 +20,7 @@ class entryComponentController implements ng.IOnInit
     public name: string;
     public category: string;
     public date: string;
+    public author: string;
 
     constructor(public $scope: ng.IScope, public $location: ng.ILocationService,
         public $sce: ng.ISCEService, public menuService: menuService,
@@ -31,10 +32,12 @@ class entryComponentController implements ng.IOnInit
     $onInit(): void
     {
         let self = this;
-        let url = '/content/items.json';
+        
+        let url = 'content/items.json';
         let name = self.name.replace(/_/g, ' ');
 
         this.loadContent();
+        this.loadSiteInfo();
 
         this.menuService.checkPath(name);
 
@@ -51,6 +54,7 @@ class entryComponentController implements ng.IOnInit
                 if (item.name == name)
                 {
                     self.date = item.date;
+                    self.author = item.author;
                     self.category = item.category;
                     self.name = item.name;
                     self.title = item.title;
@@ -63,19 +67,30 @@ class entryComponentController implements ng.IOnInit
         });
     }
 
+    private loadSiteInfo(): void
+    {
+        let self = this;
+
+        this.httpService.getSiteInfo().then(info =>
+        {
+            document.title = info.title;
+            self.$scope.$apply();
+        });
+    }
+
     private loadContent(): void
     {
-        let name = this.name.replace(/ /g, '_');
-        let file = "/content/" + this.category + "/" + name + "/index.html";
+        let name = this.name.replace(/ /g, '_').toLowerCase();
+        let file = "content/" + this.category.toLowerCase() + "/" + name + "/index.html";
+        
         let self = this;
         this.httpService.downloadFile(file).then(resp =>
         {
-
             var newScope = this.$scope.$new(false, this.$scope);
             var dynamicComponent = this.$compile(resp)(newScope);
             setTimeout(function ()
             {
-                var x = document.getElementById('xxx');
+                var x = document.getElementById('divPageContent');
                 angular.element(x).append(dynamicComponent);
 
                 self.$scope.$apply();
@@ -98,7 +113,7 @@ class entryComponentController implements ng.IOnInit
                         }
                     }
 
-                    var url = "/content/" + self.category + "/" + name + "/" + fileName;
+                    var url = "content/" + self.category + "/" + name + "/" + fileName;
                     self.httpService.downloadFile(url).then(content =>
                     {
                         if (lang != null && lang.trim().length > 0)
@@ -130,7 +145,7 @@ class entryComponentController implements ng.IOnInit
             let item = items[i];
 
             let source = item.getAttribute(srcAttributeName);
-            let fullUrl = window.location.origin + "/content/" + category + "/" + name + "/" + source;
+            let fullUrl = window.location.origin + window.location.pathname + "content/" + category + "/" + name + "/" + source;
 
             item.setAttribute(targetAttributeName, fullUrl);
         }

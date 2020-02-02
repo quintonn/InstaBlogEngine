@@ -1,17 +1,19 @@
 ﻿<div class="text-center w-full absolute h-full overflow-auto flex-1 scrollbar-w-2 scrollbar-track-gray-lighter scrollbar-thumb-rounded scrollbar-thumb-gray scrolling-touch">
-    <div class="container max-w-2xl flex flex-col w-full h-full px-4 lg:px-0  mx-auto ">
+    <style>
+        *[class^='token'], *[class*=' token'] {
+            color: blue;
+        }
+    </style>
+    <div class="container max-w-xl md:max-w-3xl flex flex-col w-full h-full px-6 lg:px-0  mx-auto ">
         <div class="text-3xl mt-2 lg:text-4xl font-extrabold md:pt-2">
-            q Blog Engine
+            {{$ctrl.info.title}}
         </div>
-        <div class="font-bold text-sm lg:text-xl lg:text-2xl px-4  lg:px-0  text-left mb-2">
-            This website aims to provide an easy way to create a blog without having to run servers or any complicated infrastructure.
-        </div>
-        <div class="font-bold text-sm lg:text-xl lg:text-2xl px-4  lg:px-0  text-left mb-2">
-            The entire site runs using the powerfull features provided by <a class="font-bold text-blue-600 visited:text-purple-600 " target="_blank" href="https://github.com">GitHub</a>.
-        </div>
-        <div class="font-bold text-sm lg:text-xl lg:text-2xl px-4  lg:px-0  text-left mb-2">
-            This includes GitHub's Pages feature to host and run the entire website as well as relying on Pull Requests for updating and adding new content and comparing different versions.
+        <hr class="my-2 lg:my-4" />
+        <div id="divPageContent"></div>
+
+        <div id="divPageContent" class="flex-grow"></div>
+        <div class="font-bold text-xs lg:text-sm my-1 md:my-4 text-left text-gray-600 font-mono relative bottom-0">
+            This blog was created using <web-link link="https://github.com/quintonn/InstaBlog">InstaBlog</web-link>
         </div>
     </div>
-    <hr class="mt-32" />
 </div>

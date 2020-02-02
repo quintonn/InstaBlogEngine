@@ -1,12 +1,8 @@
 ﻿<div class="text-center w-full absolute h-full">
     <div class="container max-w-2xl flex flex-col w-full h-full px-4 lg:px-0  mx-auto">
         <div class="text-3xl mt-2 lg:text-4xl font-extrabold md:pt-2">
-            q Blog Engine
+            {{$ctrl.info.title}}
         </div>
-        <div class="font-extrabold text-sm lg:text-3xl uppercase">
-            The q Blog Engine
-        </div>
-
         <div class="my-2 text-left font-bold text-xl overflow-auto flex-1 scrollbar-w-2 scrollbar-track-gray-lighter scrollbar-thumb-rounded scrollbar-thumb-gray scrolling-touch">
             <div ng-repeat="item in $ctrl.items" class="w-full py-1 border-t-2 border-gray-200 cursor-pointer" ng-click="$ctrl.selectItem(item)">
                 <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center">
@@ -22,8 +18,8 @@
             </div>
         </div>
 
-        <div class="font-bold text-sm lg:text-xl my-1 md:my-4 text-left text-gray-600">
-            The end
+        <div class="font-bold text-xs lg:text-sm my-1 md:my-4 text-left text-gray-600 font-mono">
+            This blog was created using <web-link link="https://github.com/quintonn/InstaBlog">InstaBlog</web-link>
         </div>
     </div>
 </div>

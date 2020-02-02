@@ -1,6 +1,7 @@
 ﻿import * as angular from 'angular';
 import { appConstants } from '../models/appConstants';
 import { blogItem } from '../models/blogItem';
+import { siteInfo } from '../models/siteInfo';
 
 require("../appConfig");
 
@@ -47,6 +48,21 @@ export class httpService
             result.push(item);
         }
         return result;
+    }
+
+    public getSiteInfo(): Promise<siteInfo>
+    {
+        let url = 'info/site.json';
+
+        return this.downloadFile(url).catch(err =>
+        {
+            console.error('unable to download ' + url + ': ' + err);
+            return Promise.resolve(null);
+        }).then(function (data: string)
+        {
+            let info = JSON.parse(data) as siteInfo;
+            return Promise.resolve(info);
+        });
     }
 }
 

@@ -1,6 +1,7 @@
 ﻿import * as angular from 'angular';
 import { appConstants } from './models/appConstants';
 import { ILocationProvider, ISCEDelegateProvider } from 'angular';
+import { menuService } from './services/menuService';
 
 require("./appConfig");
 
@@ -21,14 +22,15 @@ angular.module(appConstants.appName).config(['$routeProvider', '$sceDelegateProv
                 {
                     item = "home";
                 }
-
+                
                 return "<" + item + "></" + item + ">";
             },
             resolve:
             {
-                xx: ['$location', function ($location: ng.ILocationService)
+                xx: ['$location', 'menuService', function ($location: ng.ILocationService, menuService : menuService)
                 {
-                    var path = $location.path();
+                    var path = $location.path().substr(1);
+                    menuService.setHeading(path);
                 }]
             }
         }).when("/:path/:category/:name",

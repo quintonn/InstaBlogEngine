@@ -4,14 +4,16 @@
 		"name": "Super Rugby 2020",
 		"tags": [ "Super Rugby" ],
 		"category": "Rugby",
-		"date": "01 Jan 2020"
+		"date": "01 Jan 2020",
+		"author": "Mr Rugby"
 	},
 	{
 		"title": "Example Blog Post",
 		"name": "Example Post",
 		"tags": [ "Sample", "Blog Post" ],
-		"category": "sample",
-		"date": "01 Jan 2020"
+		"category": "Sample",
+		"date": "01 Jan 2020",
+		"author":  "Example Author"
 	}
 	
 ]

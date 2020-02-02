@@ -3,6 +3,7 @@ import { appConstants } from '../../models/appConstants';
 import { menuService } from '../../services/menuService';
 import { httpService } from '../../services/httpService';
 import { blogItem } from '../../models/blogItem';
+import { siteInfo } from '../../models/siteInfo';
 
 require("../../appConfig");
 
@@ -11,6 +12,7 @@ class HomeComponentController implements ng.IOnInit
     static $inject = ['$scope', '$http', '$location', 'menuService', 'httpService'];
 
     public items: Array<blogItem>;
+    public info: siteInfo;
 
     constructor(public $scope: ng.IScope, public $http: ng.IHttpService,
         public $location: ng.ILocationService, public menuService: menuService,
@@ -22,7 +24,20 @@ class HomeComponentController implements ng.IOnInit
     $onInit(): void
     {
         this.menuService.checkPath();
-        this.loadItems(this);
+        this.loadItems();
+        this.loadSiteInfo();
+    }
+
+    private loadSiteInfo(): void
+    {
+        let self = this;
+
+        this.httpService.getSiteInfo().then(info =>
+        {
+            self.info = info;
+            document.title = info.title;
+            self.$scope.$apply();
+        });
     }
 
     public selectItem(item: blogItem): void
@@ -40,14 +55,16 @@ class HomeComponentController implements ng.IOnInit
         }, 10);
     }
 
-    private loadItems(self: HomeComponentController): void
+    private loadItems(): void
     {
+        let self = this;
         self.items = [];
-        self.httpService.downloadFile("/content/items.json")
+        
+        self.httpService.downloadFile("content/items.json")
             .then(self.httpService.createBlogItems)
             .catch(err =>
             {
-                console.log("Error downloading items: ", err);
+                console.error("Error downloading items: ", err);
                 return Promise.resolve(null);
             }).then(function (items: blogItem[])
             {
