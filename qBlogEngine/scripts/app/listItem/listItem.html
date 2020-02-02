@@ -1,0 +1,8 @@
+﻿<div class="flex " ng-class="$ctrl.getClasses()">
+    <div class="pr-1 font-bold" ng-style="{'min-width' : '{{$ctrl.minWidth}}'}">
+        {{$ctrl.heading}}
+    </div>
+    <div class="flex-grow">
+        <ng-transclude></ng-transclude>
+    </div>
+</div>

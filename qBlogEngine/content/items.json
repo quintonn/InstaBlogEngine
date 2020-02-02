@@ -1,0 +1,17 @@
+[
+	{
+		"title": "Super Rugby 2020 Kicks Off",
+		"name": "Super Rugby 2020",
+		"tags": [ "Super Rugby" ],
+		"category": "Rugby",
+		"date": "01 Jan 2020"
+	},
+	{
+		"title": "Example Blog Post",
+		"name": "Example Post",
+		"tags": [ "Sample", "Blog Post" ],
+		"category": "sample",
+		"date": "01 Jan 2020"
+	}
+	
+]
