@@ -13,5 +13,5 @@
       "node"
     ]
   },
-  "exclude": [ "node_modules", "dist", "xxx" ]
+  "exclude": [ "node_modules", "dist" ]
 }

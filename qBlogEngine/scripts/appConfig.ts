@@ -15,5 +15,4 @@ setTimeout(function ()
     var div = document.getElementById('mainApp');
 
     angular.bootstrap(div, [appConstants.appName], { strictDi: true });
-
 }, 100);

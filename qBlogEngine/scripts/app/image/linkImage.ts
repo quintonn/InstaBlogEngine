@@ -33,7 +33,9 @@ class linkImageComponent implements ng.IComponentOptions
         this.template = require('./linkImage.html');
         this.bindings =
         {
-            src: "@"
+            src: "@",
+            imageSource: "@",
+            imageCaption: "@"
         };
     }
 }

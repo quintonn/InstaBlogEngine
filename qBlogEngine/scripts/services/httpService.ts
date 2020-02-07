@@ -9,12 +9,39 @@ export class httpService
 {
     static $inject = ['$location'];
 
+    private static siteInfo: siteInfo = null;
+    private static siteInfoPromise: Promise<siteInfo> = httpService.getSiteInfoPromise();
+
     constructor()
     {
-        
+    }
+
+    private static getSiteInfoPromise(): Promise<siteInfo>
+    {
+        if (httpService.siteInfo != null)
+        {
+            return Promise.resolve(httpService.siteInfo);
+        }
+
+        let url = 'info/site.json';
+        return httpService.downloadFileInternal(url).catch(err =>
+        {
+            console.error('unable to download ' + url + ': ' + err);
+            return Promise.resolve(null);
+        }).then(function (data: string)
+        {
+            let info = JSON.parse(data) as siteInfo;
+            httpService.siteInfo = info;
+            return Promise.resolve(info);
+        });
     }
 
     public downloadFile(file: string): Promise<string>
+    {
+        return httpService.downloadFileInternal(file);
+    }
+
+    private static downloadFileInternal(file: string): Promise<string>
     {
         var headers = new Headers();
         headers.append('pragma', 'no-cache');
@@ -24,7 +51,17 @@ export class httpService
             method: 'GET',
             headers: headers,
         };
-        return fetch(file, init).then(response => response.text());
+        return fetch(file, init).then(response =>
+        {
+            if (response.ok == true)
+            {
+                return response.text();
+            }
+            else
+            {
+                return Promise.reject(response);
+            }
+        });
     }
 
     public splitData(data: string): string[]
@@ -52,17 +89,7 @@ export class httpService
 
     public getSiteInfo(): Promise<siteInfo>
     {
-        let url = 'info/site.json';
-
-        return this.downloadFile(url).catch(err =>
-        {
-            console.error('unable to download ' + url + ': ' + err);
-            return Promise.resolve(null);
-        }).then(function (data: string)
-        {
-            let info = JSON.parse(data) as siteInfo;
-            return Promise.resolve(info);
-        });
+        return httpService.siteInfoPromise;
     }
 }
 

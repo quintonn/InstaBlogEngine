@@ -6,16 +6,14 @@
             </svg>
         </div>
         <div class="text-lg sm:text-2xl font-extrabold capitalize nav-header">{{$ctrl.heading}}</div>
-        <div class="items-center w-full h-full absolute lg:w-auto hidden lg:block menu-close right-0 pt-4 self-center">
-
-            <nav class="bg-gray-100 text-2xl font-extrabold text-center fixed lg:relative lg:block w-full h-full flex flex-col lg:h-auto justify-start pt-8 lg:pt-0 left-0 top-0">
-                <div ng-click="$ctrl.menuClick('about')" class="cursor-pointer inline lg:pr-4 border-r-2 border-gray-400">About</div>
-                <div ng-click="$ctrl.menuClick('contact')" class="cursor-pointer inline lg:pl-2 lg:pr-4">Contact</div>
+        <div ng-class="$ctrl.getSizeClasses('items-center  h-full absolute menu-close right-0 pt-4 self-center', 'w-full hidden', ' lg:w-auto lg:block')" >
+            <nav ng-class="$ctrl.getSizeClasses('bg-gray-100 text-2xl font-extrabold text-center w-full flex-col justify-start left-0 top-0','pt-8 h-full flex fixed','lg:pt-0 lg:h-auto lg:block lg:relative')" >
+                <div ng-repeat="menu in $ctrl.menus track by $index" ng-click="$ctrl.menuClick(menu)" class="cursor-pointer inline lg:pl-2 lg:pr-4 capitalize" ng-class="$ctrl.getMenuClass($index)">{{menu}}</div>
             </nav>
         </div>
 
         <!--<div class="lg:hidden fixed right-0 px-4">-->
-        <div class="fixed lg:w-auto lg:hidden right-0 pr-2 self-center">
+        <div ng-class="$ctrl.getSizeClasses('fixed right-0 pr-2 self-center', '', 'lg:w-auto lg:hidden')">
             <button ng-click="$ctrl.toggleMenu()" type="button" class="block text-blackish hover:text-orange-700 focus:text-orange-700 focus:outline-none">
                 <svg class="h-6 w-6 fill-current" viewBox="0 0 24 24">
                     <path class="hidden menu-close" fill-rule="evenodd" d="M18.278 16.864a1 1 0 0 1-1.414 1.414l-4.829-4.828-4.828 4.828a1 1 0 0 1-1.414-1.414l4.828-4.829-4.828-4.828a1 1 0 0 1 1.414-1.414l4.829 4.828 4.828-4.828a1 1 0 1 1 1.414 1.414l-4.828 4.829 4.828 4.828z" />

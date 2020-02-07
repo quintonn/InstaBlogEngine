@@ -1,3 +1,15 @@
 {
-  "title": "Insta Blog Template"
+  "title": "Insta Blog Template",
+  "menus": [ "About", "Contact", "Test Item" ],
+  "_menuStyle":  "expand | default | collapse",
+  "menuStyle": "default",
+  "disqus": {
+    "siteName": "abc",
+    "enabled": false
+  },
+  "feedBurner": {
+    "link": "http://feeds.feedburner.com/XXXX",
+    "mail": "https://feedburner.google.com/fb/a/mailverify?uri=XXXXXXXX&amp;loc=en_US",
+    "enabled": true
+  }
 }

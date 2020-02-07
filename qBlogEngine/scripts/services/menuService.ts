@@ -91,7 +91,7 @@ export class menuService
             this.history.push(path);
         }
 
-        this.$location.path(path);
+        this.$location.path(path).search('');
 
         this.checkPath();
     }

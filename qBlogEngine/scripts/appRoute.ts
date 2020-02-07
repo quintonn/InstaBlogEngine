@@ -13,7 +13,28 @@ angular.module(appConstants.appName).config(['$routeProvider', '$sceDelegateProv
         // Allow loading from our assets domain.  Notice the difference between * and **.
         '**']);
 
-    $routeProvider.when("/:path?",
+    $routeProvider.when("/x/:path?",
+        {
+            template: function ($routeParams: ng.route.IRouteParamsService)
+            {
+                var item = $routeParams.path;
+                if (item == null || item.length == 0)
+                {
+                    item = "home";
+                }
+                //return "<" + item + "></" + item + ">";
+                return "<menu-item path='" + item + "'></menu-item>";
+            },
+            resolve:
+            {
+                xx: ['$location', 'menuService', function ($location: ng.ILocationService, menuService: menuService)
+                {
+                    var parts = $location.path().split('/');
+                    var path = parts[parts.length - 1];
+                    menuService.setHeading(path);
+                }]
+            }
+        }).when("/:path?",
         {
             template: function ($routeParams: ng.route.IRouteParamsService)
             {
@@ -48,16 +69,8 @@ angular.module(appConstants.appName).config(['$routeProvider', '$sceDelegateProv
                     }
 
                     return "<" + item + " category='" + category + "' name='" + name + "'></" + item + ">";
-                },
-                resolve:
-                {
-                    xx: ['$location', function ($location: ng.ILocationService)
-                    {
-                        var path = $location.path();
-                    }]
                 }
             });
-
     //$locationProvider.html5Mode({ enabled: true, requireBase: false });
     // using this breaks refresh - refreshing requires url rewrites.
 }]);

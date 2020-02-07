@@ -1,19 +1,10 @@
 [
 	{
-		"title": "Super Rugby 2020 Kicks Off",
-		"name": "Super Rugby 2020",
-		"tags": [ "Super Rugby" ],
-		"category": "Rugby",
-		"date": "01 Jan 2020",
-		"author": "Mr Rugby"
-	},
-	{
 		"title": "Example Blog Post",
 		"name": "Example Post",
-		"tags": [ "Sample", "Blog Post" ],
+		"tags": [ "Sample", "Blog Post", "InstaBlog" ],
 		"category": "Sample",
-		"date": "01 Jan 2020",
-		"author":  "Example Author"
+		"date": "10 Jan 2020",
+		"author": "Insta Blogger #1"
 	}
-	
 ]

@@ -1,0 +1,16 @@
+﻿<div class="flex flex-col font-bold text-xs lg:text-sm my-1 md:my-4 text-left text-gray-600 font-mono">
+    <div ng-if="$ctrl.siteInfo.feedBurner.enabled == true" class="justify-end flex flex-row items-center">
+        <a ng-if="$ctrl.siteInfo.feedBurner.link.length > 0" href="{{$ctrl.siteInfo.feedBurner.link}}" target="_blank" title="Subscribe to my feed" rel="alternate" type="application/rss+xml">
+            <img src="//feedburner.google.com/fb/images/pub/feed-icon32x32.png" alt="" style="border:0;" class="w-4 h-auto" />
+        </a>
+
+        <a ng-if="$ctrl.siteInfo.feedBurner.mail.length > 0" class="ml-4 w-6 h-auto" target="_blank" href="{{$ctrl.siteInfo.feedBurner.mail}}">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path class="heroicon-ui" d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6c0-1.1.9-2 2-2zm16 3.38V6H4v1.38l8 4 8-4zm0 2.24l-7.55 3.77a1 1 0 0 1-.9 0L4 9.62V18h16V9.62z" />
+            </svg>
+        </a>
+    </div>
+    <div>
+        This blog was created using <web-link link="https://github.com/quintonn/InstaBlog">InstaBlog</web-link>
+    </div>
+</div>

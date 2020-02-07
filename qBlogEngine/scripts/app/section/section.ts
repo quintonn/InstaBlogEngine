@@ -9,6 +9,10 @@ class sectionComponentController implements ng.IOnInit
 {
     static $inject = ['$scope'];
 
+    public headingId: string;
+    public heading: string;
+    public sectionUrl: string;
+
     constructor(public $scope: ng.IScope)
     {
         
@@ -16,10 +20,10 @@ class sectionComponentController implements ng.IOnInit
 
     $onInit(): void
     {
-       
+        this.headingId = this.heading.toLowerCase().replace(/ /g, '_');
+        var url = window.location.hash.split("?")[0];
+        this.sectionUrl = url + "?scrollTo=" + this.headingId;
     }
-
-    
 }
 
 class sectionComponent implements ng.IComponentOptions

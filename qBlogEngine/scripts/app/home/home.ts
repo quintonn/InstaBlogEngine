@@ -12,13 +12,17 @@ class HomeComponentController implements ng.IOnInit
     static $inject = ['$scope', '$http', '$location', 'menuService', 'httpService'];
 
     public items: Array<blogItem>;
+    public allItems: Array<blogItem>;
     public info: siteInfo;
+    public filterValue: string;
 
     constructor(public $scope: ng.IScope, public $http: ng.IHttpService,
         public $location: ng.ILocationService, public menuService: menuService,
         public httpService: httpService)
     {
         this.items = [];
+        this.allItems = [];
+        this.filterValue = ""
     }
 
     $onInit(): void
@@ -48,17 +52,47 @@ class HomeComponentController implements ng.IOnInit
             let itemName = item.name;//.toLowerCase();//.replace(/ /g, '_');
 
             let url = "entry/" + item.category.toLowerCase() + "/" + itemName;// + "/" + item.title;
-            url = url.replace(/ /g, '_');
+            url = url.replace(/ /g, '_').toLowerCase();
             self.menuService.goto(url);
 
             self.$scope.$apply();
         }, 10);
     }
 
+    public clearFilter()
+    {
+        this.filterValue = "";
+        this.items = this.allItems;
+    }
+
+    public filter(value: string, type: string): void
+    {
+        let self = this;
+        self.filterValue = value;//type + " = " + value;
+        
+        self.items = self.allItems.filter((item, index) =>
+        {
+            if (type == "tag")
+            {
+                return item.tags.indexOf(value) > -1;
+            }
+            else if (type == "category")
+            {
+                return item.category.indexOf(value) > -1;
+            }
+            return false;
+        });
+        //setTimeout(function ()
+        //{
+        //    history.replaceState('', '', '?filter=' + value);
+        //}, 10);
+    }
+
     private loadItems(): void
     {
         let self = this;
         self.items = [];
+        self.allItems = [];
         
         self.httpService.downloadFile("content/items.json")
             .then(self.httpService.createBlogItems)
@@ -68,7 +102,7 @@ class HomeComponentController implements ng.IOnInit
                 return Promise.resolve(null);
             }).then(function (items: blogItem[])
             {
-                self.items = items.sort((x, y) =>
+                self.allItems = items.sort((x, y) =>
                 {
                     var xDate = new Date(x.date);
                     var yDate = new Date(y.date);
@@ -85,6 +119,7 @@ class HomeComponentController implements ng.IOnInit
                 });
                 //.slice(0, 10); //TODO: can limit the number so it doesn't load all on screen at once
 
+                self.items = self.allItems;
 
                 self.$scope.$apply();
             });

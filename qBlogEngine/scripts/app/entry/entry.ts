@@ -7,13 +7,15 @@ import { httpService } from '../../services/httpService';
 import * as Prism from 'prismjs';
 import 'prismjs/themes/prism-okaidia.css';
 import 'prismjs/components/prism-csharp'; // to load C-Sharp language
+import 'prismjs/components/prism-json'; // to load C-Sharp language
 import { blogItem } from '../../models/blogItem';
+import { siteInfo } from '../../models/siteInfo';
 
 require("../../appConfig");
 
 class entryComponentController implements ng.IOnInit
 {
-    static $inject = ['$scope', '$location', '$sce', 'menuService', 'httpService', '$compile'];
+    static $inject = ['$scope', '$location', '$sce', 'menuService', 'httpService', '$compile', '$anchorScroll', '$window'];
 
     public html: string;
     public title: string;
@@ -22,9 +24,13 @@ class entryComponentController implements ng.IOnInit
     public date: string;
     public author: string;
 
+    private siteInfo: siteInfo;
+
     constructor(public $scope: ng.IScope, public $location: ng.ILocationService,
         public $sce: ng.ISCEService, public menuService: menuService,
-        public httpService: httpService, public $compile: angular.ICompileService)
+        public httpService: httpService, public $compile: angular.ICompileService,
+        public $anchorScroll: angular.IAnchorScrollService,
+        public $window: any)
     {
         this.html = this.$sce.trustAsHtml("");
     }
@@ -32,12 +38,11 @@ class entryComponentController implements ng.IOnInit
     $onInit(): void
     {
         let self = this;
-        
+
         let url = 'content/items.json';
         let name = self.name.replace(/_/g, ' ');
 
-        this.loadContent();
-        this.loadSiteInfo();
+        this.loadSiteInfo().then(_ => self.loadContent(self));
 
         this.menuService.checkPath(name);
 
@@ -51,7 +56,7 @@ class entryComponentController implements ng.IOnInit
             for (let i = 0; i < resp.length; i++)
             {
                 var item = resp[i];
-                if (item.name == name)
+                if (item.name.toLowerCase() == name)
                 {
                     self.date = item.date;
                     self.author = item.author;
@@ -60,34 +65,35 @@ class entryComponentController implements ng.IOnInit
                     self.title = item.title;
 
                     self.$scope.$apply();
-                    
+
                     break;
                 }
             }
         });
     }
 
-    private loadSiteInfo(): void
+    private loadSiteInfo(): Promise<void>
     {
         let self = this;
-
-        this.httpService.getSiteInfo().then(info =>
+        return this.httpService.getSiteInfo().then(info =>
         {
+            self.siteInfo = info;
             document.title = info.title;
             self.$scope.$apply();
+            return Promise.resolve();
         });
     }
 
-    private loadContent(): void
+    private loadContent(self: entryComponentController): void
     {
-        let name = this.name.replace(/ /g, '_').toLowerCase();
-        let file = "content/" + this.category.toLowerCase() + "/" + name + "/index.html";
-        
-        let self = this;
-        this.httpService.downloadFile(file).then(resp =>
+        let name = self.name.replace(/ /g, '_').toLowerCase();
+        let category = self.category.replace(/ /g, '_').toLowerCase();
+        let file = "content/" + category + "/" + name + "/index.html";
+
+        self.httpService.downloadFile(file).then(resp =>
         {
-            var newScope = this.$scope.$new(false, this.$scope);
-            var dynamicComponent = this.$compile(resp)(newScope);
+            var newScope = self.$scope.$new(false, self.$scope);
+            var dynamicComponent = self.$compile(resp)(newScope);
             setTimeout(function ()
             {
                 var x = document.getElementById('divPageContent');
@@ -113,7 +119,7 @@ class entryComponentController implements ng.IOnInit
                         }
                     }
 
-                    var url = "content/" + self.category + "/" + name + "/" + fileName;
+                    var url = "content/" + category + "/" + name + "/" + fileName;
                     self.httpService.downloadFile(url).then(content =>
                     {
                         if (lang != null && lang.trim().length > 0)
@@ -130,8 +136,52 @@ class entryComponentController implements ng.IOnInit
                     });
                 }
 
-                self.findAndUpdateImageLinks('image', 'x-src', 'src', self.category, name);
-                self.findAndUpdateImageLinks('imageRef', 'href', 'href', self.category, name);
+                self.findAndUpdateImageLinks('image', 'x-src', 'src', category, name);
+                self.findAndUpdateImageLinks('imageRef', 'href', 'href', category, name);
+
+                if (self.$location.search().scrollTo)
+                {
+                    self.$anchorScroll(self.$location.search().scrollTo);
+                }
+
+                //Setup disqus:
+                if (self.siteInfo.disqus && self.siteInfo.disqus.enabled == true)
+                {
+                    console.log('adding discus to this site with siteName: ' + self.siteInfo.disqus.siteName);
+
+                    let w: any = self.$window;
+
+                    let disqusConfig = function ()
+                    {
+                        this.page.identifier = category + "_" + name;
+                        this.page.url = self.$location.absUrl();
+                    };
+
+                    if (!w.DISQUS)
+                    {
+                        console.log('calling embed, not reset, for disqus');
+
+                        w.disqus_config = disqusConfig;
+
+                        var d = document, s = d.createElement('script');
+                        s.src = 'https://' + self.siteInfo.disqus.siteName + '.disqus.com/embed.js';
+                        s.setAttribute('data-timestamp', new Date() + "");
+                        (d.head || d.body).appendChild(s);
+                    }
+                    else
+                    {
+                        console.log('calling disqus.reset');
+                        w.DISQUS.reset({
+                            reload: true,
+                            config: disqusConfig
+                        });
+                    }
+                }
+                else
+                {
+                    console.log('disqus is not configured for this site');
+                }
+
             }, 100);
         });
     }
