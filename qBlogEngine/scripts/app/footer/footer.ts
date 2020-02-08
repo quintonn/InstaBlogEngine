@@ -24,6 +24,7 @@ class footerComponentController implements ng.IOnInit
         this.httpService.getSiteInfo().then(info =>
         {
             self.siteInfo = info;
+            document.title = info.title;
             self.$scope.$apply();
         });
     }

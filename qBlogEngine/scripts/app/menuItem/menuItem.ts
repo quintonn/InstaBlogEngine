@@ -35,7 +35,6 @@ class menuItemComponentController implements ng.IOnInit
         this.httpService.getSiteInfo().then(info =>
         {
             self.info = info;
-            document.title = info.title;
             self.$scope.$apply();
         });
     }

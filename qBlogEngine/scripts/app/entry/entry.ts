@@ -78,7 +78,6 @@ class entryComponentController implements ng.IOnInit
         return this.httpService.getSiteInfo().then(info =>
         {
             self.siteInfo = info;
-            document.title = info.title;
             self.$scope.$apply();
             return Promise.resolve();
         });
