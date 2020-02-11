@@ -20,7 +20,7 @@ export class configService
     {
         //var x = Math.round(Math.random() * 100) + "-" + Math.round(Math.random() * 100);
         //let url = '/themes/' + configService.siteInfo.theme + '/' + name + '.html?v=' + x;
-        let url = '/themes/' + configService.siteInfo.theme + '/' + name + '.html';
+        let url = 'themes/' + configService.siteInfo.theme + '/' + name + '.html';
 
         return url;
     }
