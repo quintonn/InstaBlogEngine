@@ -1,0 +1,26 @@
+﻿<header class="sticky top-0 z-50 shadow bg-gray-100">
+    <div class="flex flex-row mx-1 sm:mx-4 py-2 lg:py-4 px-4 justify-center relative items-center">
+        <div ng-click="$ctrl.goHome()" class="absolute left-0 fill-current text-black w-8 h-auto pt-1 cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" >
+                <path class="heroicon-ui" d="M13 20v-5h-2v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-7.59l-.3.3a1 1 0 1 1-1.4-1.42l9-9a1 1 0 0 1 1.4 0l9 9a1 1 0 0 1-1.4 1.42l-.3-.3V20a2 2 0 0 1-2 2h-3a2 2 0 0 1-2-2zm5 0v-9.59l-6-6-6 6V20h3v-5c0-1.1.9-2 2-2h2a2 2 0 0 1 2 2v5h3z" />
+            </svg>
+        </div>
+        <div class="text-lg sm:text-2xl font-extrabold capitalize nav-header">{{$ctrl.heading}}</div>
+        <div ng-class="$ctrl.getSizeClasses('items-center  h-full absolute menu-close right-0 pt-4 self-center', 'w-full hidden', ' lg:w-auto lg:block')" >
+            <nav ng-class="$ctrl.getSizeClasses('bg-gray-100 text-2xl font-extrabold text-center w-full flex-col justify-start left-0 top-0','pt-8 h-full flex fixed','lg:pt-0 lg:h-auto lg:block lg:relative')" >
+                <div ng-repeat="menu in $ctrl.menus track by $index" ng-click="$ctrl.menuClick(menu)" class="cursor-pointer inline lg:pl-2 lg:pr-4 capitalize border-gray-400" ng-class="$ctrl.getMenuClass($index)">{{menu}}</div>
+            </nav>
+        </div>
+
+        <!--<div class="lg:hidden fixed right-0 px-4">-->
+        <div ng-class="$ctrl.getSizeClasses('fixed right-0 pr-2 self-center', '', 'lg:w-auto lg:hidden')">
+            <button ng-click="$ctrl.toggleMenu()" type="button" class="block text-blackish hover:text-orange-700 focus:text-orange-700 focus:outline-none">
+                <svg class="h-6 w-6 fill-current" viewBox="0 0 24 24">
+                    <path class="hidden menu-close" fill-rule="evenodd" d="M18.278 16.864a1 1 0 0 1-1.414 1.414l-4.829-4.828-4.828 4.828a1 1 0 0 1-1.414-1.414l4.828-4.829-4.828-4.828a1 1 0 0 1 1.414-1.414l4.829 4.828 4.828-4.828a1 1 0 1 1 1.414 1.414l-4.828 4.829 4.828 4.828z" />
+                    <path class="menu-open" fill-rule="evenodd" d="M4 5h16a1 1 0 0 1 0 2H4a1 1 0 1 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2z" />
+                </svg>
+            </button>
+        </div>
+
+    </div>
+</header>

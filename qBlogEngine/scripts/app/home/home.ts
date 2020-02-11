@@ -4,6 +4,7 @@ import { menuService } from '../../services/menuService';
 import { httpService } from '../../services/httpService';
 import { blogItem } from '../../models/blogItem';
 import { siteInfo } from '../../models/siteInfo';
+import { configService } from '../../services/configService';
 
 require("../../appConfig");
 
@@ -29,19 +30,7 @@ class HomeComponentController implements ng.IOnInit
     {
         this.menuService.checkPath();
         this.loadItems();
-        this.loadSiteInfo();
-    }
-
-    private loadSiteInfo(): void
-    {
-        let self = this;
-
-        this.httpService.getSiteInfo().then(info =>
-        {
-            self.info = info;
-            document.title = info.title;
-            self.$scope.$apply();
-        });
+        this.info = configService.siteInfo;
     }
 
     public selectItem(item: blogItem): void
@@ -129,12 +118,15 @@ class HomeComponentController implements ng.IOnInit
 class HomeComponent implements ng.IComponentOptions
 {
     public controller: any;
-    public template: string;
+    public templateUrl: any;
 
     constructor()
     {
         this.controller = HomeComponentController;
-        this.template = require('./home.html');
+        this.templateUrl = function ()
+        {
+            return configService.getThemeFile('home');
+        };
     }
 }
 

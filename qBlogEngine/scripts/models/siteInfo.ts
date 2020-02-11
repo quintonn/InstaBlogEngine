@@ -6,6 +6,7 @@ export class siteInfo
     title: string;
     menus: Array<string>;
     menuStyle: string;
+    theme: string;
     disqus: disqusInfo;
     feedBurner: feedBurner;
 

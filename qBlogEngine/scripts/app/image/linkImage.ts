@@ -2,6 +2,7 @@
 
 // Path to appConstants might be different depending on your item's location
 import { appConstants } from '../../models/appConstants';
+import { configService } from '../../services/configService';
 
 require("../../appConfig");
 
@@ -24,13 +25,16 @@ class linkImageComponentController implements ng.IOnInit
 class linkImageComponent implements ng.IComponentOptions
 {
     public controller: any;
-    public template: string;
+    public templateUrl: any;
     public bindings: any;
 
     constructor()
     {
         this.controller = linkImageComponentController;
-        this.template = require('./linkImage.html');
+        this.templateUrl = function ()
+        {
+            return configService.getThemeFile('linkImage');
+        };
         this.bindings =
         {
             src: "@",

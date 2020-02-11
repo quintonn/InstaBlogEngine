@@ -1,0 +1,39 @@
+﻿<div ng-if="$ctrl.align != 'right'" class="md:flex mb-4">
+    <div class="md:hidden font-bold mb-2">
+        {{$ctrl.heading}}
+    </div>
+    <div class="md:flex-shrink-0">
+        <a href="{{$ctrl.url}}" class="imageRef " target="_blank">
+            <img class="image rounded-lg md:w-56" x-src="{{$ctrl.url}}" />
+        </a>
+        <a class="text-xs text-gray-500 font-mono" href="{{$ctrl.imageSource}}">{{$ctrl.imageCaption}}</a>
+    </div>
+    <div class="mt-4 md:mt-0 md:ml-6">
+        <div class="font-bold hidden md:block">
+            {{$ctrl.heading}}
+        </div>
+        <div>
+            <ng-transclude></ng-transclude>
+        </div>
+    </div>
+</div>
+
+<div ng-if="$ctrl.align == 'right'" class="flex mb-4 flex-col md:flex-row">
+    <div class="md:hidden font-bold mb-2 text-left">
+        {{$ctrl.heading}}
+    </div>
+    <div class="mt-4 md:mt-0 order-2 md:order-1 mr-4">
+        <div class="font-bold text-right hidden md:block">
+            {{$ctrl.heading}}
+        </div>
+        <div>
+            <ng-transclude></ng-transclude>
+        </div>
+    </div>
+    <div class="md:flex-shrink-0 order-1 md:order-2">
+        <a href="josh.png" class="imageRef " target="_blank">
+            <img class="image rounded-lg md:w-56" x-src="{{$ctrl.url}}" />
+        </a>
+        <a class="text-xs text-gray-500 font-mono" href="{{$ctrl.imageSource}}">{{$ctrl.imageCaption}}</a>
+    </div>
+</div>

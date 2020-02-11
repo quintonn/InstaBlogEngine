@@ -1,3 +1,16 @@
 ﻿@tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+@responsive {
+    .scrollbar-w-4::-webkit-scrollbar {
+        width: 0.75rem;
+        height: 0.75rem;
+    }
+
+    .scrollbar-w-2::-webkit-scrollbar {
+        width: 0.5rem;
+        height: 0.5rem;
+    }
+}

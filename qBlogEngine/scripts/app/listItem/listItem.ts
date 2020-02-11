@@ -2,6 +2,7 @@
 
 // Path to appConstants might be different depending on your item's location
 import { appConstants } from '../../models/appConstants';
+import { configService } from '../../services/configService';
 
 require("../../appConfig");
 
@@ -52,7 +53,7 @@ class listItemComponentController implements ng.IOnInit
 class listItemComponent implements ng.IComponentOptions
 {
     public controller: any;
-    public template: string;
+    public templateUrl: any;
     public transclude: boolean = true;
     public bindings: any;
     public require: any;
@@ -60,7 +61,10 @@ class listItemComponent implements ng.IComponentOptions
     constructor()
     {
         this.controller = listItemComponentController;
-        this.template = require('./listItem.html');
+        this.templateUrl = function ()
+        {
+            return configService.getThemeFile('listItem');
+        }
         this.bindings =
         {
             heading: "@",

@@ -1,0 +1,17 @@
+﻿<div class="text-center w-full absolute h-full overflow-auto flex-1 scrollbar-w-2 scrollbar-track-gray-lighter scrollbar-thumb-rounded scrollbar-thumb-gray scrolling-touch">
+    <style>
+        *[class^='token'], *[class*=' token'] {
+            color: blue;
+        }
+    </style>
+    <div class="container max-w-xl md:max-w-3xl flex flex-col w-full h-full px-6 lg:px-0  mx-auto ">
+        <div class="text-3xl mt-2 lg:text-4xl font-extrabold md:pt-2">
+            {{$ctrl.info.title}}
+        </div>
+        <hr class="my-2 lg:my-4" />
+        <div id="divPageContent"></div>
+
+        <div id="divPageContent" class="flex-grow"></div>
+        <footer></footer>
+    </div>
+</div>

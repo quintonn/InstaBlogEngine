@@ -2,6 +2,7 @@
 
 // Path to appConstants might be different depending on your item's location
 import { appConstants } from '../../models/appConstants';
+import { configService } from '../../services/configService';
 
 require("../../appConfig");
 
@@ -29,14 +30,17 @@ class sectionComponentController implements ng.IOnInit
 class sectionComponent implements ng.IComponentOptions
 {
     public controller: any;
-    public template: string;
+    public templateUrl: any;
     public transclude: boolean = true;
     public bindings: any;
 
     constructor()
     {
         this.controller = sectionComponentController;
-        this.template = require('./section.html');
+        this.templateUrl = function ()
+        {
+            return configService.getThemeFile('section');
+        }
         this.bindings =
         {
             heading: "@"

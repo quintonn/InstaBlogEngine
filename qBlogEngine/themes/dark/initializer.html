@@ -1,0 +1,42 @@
+﻿<div ng-if="$ctrl.loading == true" class="fixed left-0 top-0 w-full h-full bg-white z-50" >
+    <div class="custom-spinner">
+    </div>
+</div>
+
+<style>
+    .custom-spinner {
+        display: inline-block;
+        width: 80px;
+        height: 80px;
+        top: 50%;
+        left: 50%;
+        position: absolute;
+        -webkit-transform: translate(-50%, -50%);
+        -moz-transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);
+        -o-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+    }
+
+        .custom-spinner:after {
+            content: " ";
+            display: block;
+            width: 64px;
+            height: 64px;
+            margin: 8px;
+            border-radius: 50%;
+            border: 6px solid #666699;
+            border-color: #666699 transparent #666699 transparent;
+            animation: custom-spinner 1.2s linear infinite;
+        }
+
+    @keyframes custom-spinner {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+</style>

@@ -8,4 +8,6 @@
 
     static readonly apiClient: string = "HowDoIApp";
     static readonly appName: string = "mobileAppHowDoI";
+
+    static readonly themeProvider = "@quintonn/mytest";
 }

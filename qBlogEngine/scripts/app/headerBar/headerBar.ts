@@ -1,22 +1,22 @@
 ﻿import * as angular from 'angular';
+import { appConstants } from '../../models/appConstants';
+import { siteInfo } from '../../models/siteInfo';
+import { configService } from '../../services/configService';
 import { menuService } from '../../services/menuService';
 
-// Path to appConstants might be different depending on your item's location
-import { appConstants } from '../../models/appConstants';
-import { httpService } from '../../services/httpService';
-import { siteInfo } from '../../models/siteInfo';
+
 
 require("../../appConfig");
 
 class headerBarComponentController implements ng.IOnInit
 {
-    static $inject = ['$scope', 'menuService', 'httpService'];
+    static $inject = ['$scope', 'menuService'];
 
     public heading: string = "Home";
     public menus: Array<string>;
     public siteInfo: siteInfo;
 
-    constructor(public $scope: ng.IScope, public menuService: menuService, public httpService: httpService)
+    constructor(public $scope: ng.IScope, public menuService: menuService)
     {
 
     }
@@ -24,7 +24,8 @@ class headerBarComponentController implements ng.IOnInit
     $onInit(): void
     {
         let self = this;
-        this.getSiteInfo();
+        this.siteInfo = configService.siteInfo;
+        this.menus = this.siteInfo.menus;
         var callback = (function (h: string)
         {
             self.changeHeading(h);
@@ -38,11 +39,11 @@ class headerBarComponentController implements ng.IOnInit
     {
         if (index < (this.menus.length - 1))
         {
-            return "border-r-2 border-gray-400";
+            return "border-r-2 ";
         }
         else
         {
-            return "";
+            return "border-r-0";
         }
     }
 
@@ -56,17 +57,6 @@ class headerBarComponentController implements ng.IOnInit
             }
         }
         return all + " " + small + " " + large;
-    }
-
-    private getSiteInfo(): void
-    {
-        let self = this;
-        this.httpService.getSiteInfo().then(info =>
-        {
-            self.siteInfo = info;
-            self.menus = info.menus;
-            self.$scope.$apply();
-        });
     }
 
     public goHome(): void
@@ -111,12 +101,15 @@ class headerBarComponentController implements ng.IOnInit
 class headerBarComponent implements ng.IComponentOptions
 {
     public controller: any;
-    public template: string;
+    public templateUrl: any;
 
     constructor()
     {
         this.controller = headerBarComponentController;
-        this.template = require('./headerBar.html');
+        this.templateUrl = function ()
+        {
+            return configService.getThemeFile('headerBar');
+        };
     }
 }
 

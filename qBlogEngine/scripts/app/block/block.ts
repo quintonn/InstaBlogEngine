@@ -2,6 +2,7 @@
 
 // Path to appConstants might be different depending on your item's location
 import { appConstants } from '../../models/appConstants';
+import { configService } from '../../services/configService';
 
 require("../../appConfig");
 
@@ -20,13 +21,16 @@ class blockComponentController implements ng.IOnInit
 class blockComponent implements ng.IComponentOptions
 {
     public controller: any;
-    public template: string;
+    public templateUrl: any;
     public transclude: boolean = true;
 
     constructor()
     {
         this.controller = blockComponentController;
-        this.template = require('./block.html');
+        this.templateUrl = function ()
+        {
+            return configService.getThemeFile('block');
+        };
     }
 }
 

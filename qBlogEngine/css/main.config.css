@@ -45,17 +45,22 @@ code[class*="language"] {
         display: none !important;
     }
 
+.scrollbar-w-4::-webkit-scrollbar {
+    width: 0.75rem;
+    height: 0.75rem;
+}
+
 .scrollbar-w-2::-webkit-scrollbar {
     width: 0.5rem;
     height: 0.5rem;
 }
 
 .scrollbar-track-gray-lighter::-webkit-scrollbar-track {
-    background-color: #e2e8f0;
+    background-color: lightgray;
 }
 
 .scrollbar-thumb-gray::-webkit-scrollbar-thumb {
-    background-color: #cbd5e0;
+    background-color: dimgray;
 }
 
 .scrollbar-thumb-rounded::-webkit-scrollbar-thumb {

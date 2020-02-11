@@ -2,6 +2,7 @@
 
 // Path to appConstants might be different depending on your item's location
 import { appConstants } from '../../models/appConstants';
+import { configService } from '../../services/configService';
 
 require("../../appConfig");
 
@@ -32,14 +33,17 @@ class listComponentController implements ng.IOnInit
 class listComponent implements ng.IComponentOptions
 {
     public controller: any;
-    public template: string;
+    public templateUrl: any;
     public bindings: any;
     public transclude: boolean = true;
 
     constructor()
     {
         this.controller = listComponentController;
-        this.template = require('./list.html');
+        this.templateUrl = function ()
+        {
+            return configService.getThemeFile('list');
+        }
         this.bindings =
         {
             minWidth: "@",

@@ -10,8 +10,15 @@ import 'prismjs/components/prism-csharp'; // to load C-Sharp language
 import 'prismjs/components/prism-json'; // to load C-Sharp language
 import { blogItem } from '../../models/blogItem';
 import { siteInfo } from '../../models/siteInfo';
+import { configService } from '../../services/configService';
 
 require("../../appConfig");
+
+/*
+//@ts-ignore
+import * as mytest from '@quintonn/mytest';
+*/
+
 
 class entryComponentController implements ng.IOnInit
 {
@@ -42,7 +49,8 @@ class entryComponentController implements ng.IOnInit
         let url = 'content/items.json';
         let name = self.name.replace(/_/g, ' ');
 
-        this.loadSiteInfo().then(_ => self.loadContent(self));
+        this.siteInfo = configService.siteInfo;
+        this.loadContent(self)
 
         this.menuService.checkPath(name);
 
@@ -69,17 +77,6 @@ class entryComponentController implements ng.IOnInit
                     break;
                 }
             }
-        });
-    }
-
-    private loadSiteInfo(): Promise<void>
-    {
-        let self = this;
-        return this.httpService.getSiteInfo().then(info =>
-        {
-            self.siteInfo = info;
-            self.$scope.$apply();
-            return Promise.resolve();
         });
     }
 
@@ -163,8 +160,10 @@ class entryComponentController implements ng.IOnInit
                         w.disqus_config = disqusConfig;
 
                         var d = document, s = d.createElement('script');
+
                         s.src = 'https://' + self.siteInfo.disqus.siteName + '.disqus.com/embed.js';
                         s.setAttribute('data-timestamp', new Date() + "");
+
                         (d.head || d.body).appendChild(s);
                     }
                     else
@@ -203,14 +202,19 @@ class entryComponentController implements ng.IOnInit
 
 class entryComponent implements ng.IComponentOptions
 {
+    static $inject = ['httpService'];
+
     public controller: any;
-    public template: string;
+    public templateUrl: any;;
     public bindings: any;
 
     constructor()
     {
         this.controller = entryComponentController;
-        this.template = require('./entry.html');
+        this.templateUrl = function ()
+        {
+            return configService.getThemeFile('entry');
+        };
         this.bindings =
         {
             category: "@",

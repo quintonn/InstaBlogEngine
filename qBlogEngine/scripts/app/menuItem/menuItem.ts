@@ -7,6 +7,7 @@ import { siteInfo } from '../../models/siteInfo';
 
 import Prism from 'prismjs';
 import 'prismjs/themes/prism-okaidia.css';
+import { configService } from '../../services/configService';
 
 require("../../appConfig");
 
@@ -25,18 +26,7 @@ class menuItemComponentController implements ng.IOnInit
     $onInit(): void
     {
         this.loadContent();
-        this.loadSiteInfo();
-    }
-
-    private loadSiteInfo(): void
-    {
-        let self = this;
-
-        this.httpService.getSiteInfo().then(info =>
-        {
-            self.info = info;
-            self.$scope.$apply();
-        });
+        this.info = configService.siteInfo;
     }
 
     private loadContent(): void
@@ -120,13 +110,16 @@ class menuItemComponentController implements ng.IOnInit
 class menuItemComponent implements ng.IComponentOptions
 {
     public controller: any;
-    public template: string;
+    public templateUrl: any;
     public bindings: any;
 
     constructor()
     {
         this.controller = menuItemComponentController;
-        this.template = require('./menuItem.html');
+        this.templateUrl = function ()
+        {
+            return configService.getThemeFile('menuItem');
+        }
         this.bindings =
         {
             path: "@",
