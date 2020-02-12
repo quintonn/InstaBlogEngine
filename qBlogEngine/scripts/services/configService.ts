@@ -11,16 +11,45 @@ export class configService
     public static siteInfo: siteInfo = null;
     private static siteInfoPromise: Promise<siteInfo> = configService.getSiteInfoPromise();
 
+    private static currentTheme: string = '';
+
     constructor()
     {
         
     }
 
+    private static getTheme(): string
+    {
+        if (configService.currentTheme == '')
+        {
+            var theme = '';
+
+            let tempTheme = localStorage.getItem(appConstants.appName + '_theme');
+
+            if (tempTheme != null && tempTheme.length > 0)
+            {
+                theme = tempTheme;
+                configService.setThemeIfNotSet(tempTheme);
+            }
+
+            if (theme == '')
+            {
+                theme = 'default';
+            }
+
+            configService.currentTheme = theme;
+        }
+
+        return configService.currentTheme;
+    }
+
     public static getThemeFile(name: string): string
     {
+        let theme = configService.getTheme();
+        
         //var x = Math.round(Math.random() * 100) + "-" + Math.round(Math.random() * 100);
         //let url = '/themes/' + configService.siteInfo.theme + '/' + name + '.html?v=' + x;
-        let url = 'themes/' + configService.siteInfo.theme + '/' + name + '.html';
+        let url = 'themes/' + theme + '/' + name + '.html';
 
         return url;
     }
@@ -31,9 +60,7 @@ export class configService
         {
             return Promise.resolve(configService.siteInfo);
         }
-
-        //var x = Math.round(Math.random() * 100);
-        //let url = 'info/site.json?v='+x;
+        
         let url = 'info/site.json';
         return configService.downloadFileInternal(url).catch(err =>
         {
@@ -43,21 +70,40 @@ export class configService
         {
             let info = JSON.parse(data) as siteInfo;
 
-            if (info.theme == null || info.theme.length == 0)
-            {
-                info.theme = "default";
-            }
+            configService.setThemeIfNotSet(info.theme);
+            info.theme = configService.getTheme();
 
-            configService.siteInfo = info;
-            return Promise.resolve(info);
+            configService.setThemeIfNotSet(info.theme);
+
+            return new Promise(function (res, rej)
+            {
+                configService.siteInfo = info;
+                return res(info);
+            });
+            
         });
+    }
+
+    private static setThemeIfNotSet(theme: string): void
+    {
+        let tempTheme = localStorage.getItem(appConstants.appName + '_theme');
+        if (tempTheme != null && tempTheme != '' && tempTheme != 'null')
+        {
+            this.updateTheme(tempTheme);
+        }
+    }
+
+    public static updateTheme(theme: string): void
+    {
+        localStorage.setItem(appConstants.appName + '_theme', theme);
+        configService.currentTheme = theme;
     }
 
     private static downloadFileInternal(file: string): Promise<string>
     {
         var headers = new Headers();
-        //headers.append('pragma', 'no-cache');
-        //headers.append('cache-control', 'no-cache');
+        headers.append('pragma', 'no-cache');
+        headers.append('cache-control', 'no-cache');
 
         var init = {
             method: 'GET',

@@ -10,13 +10,13 @@ require("../../appConfig");
 
 class headerBarComponentController implements ng.IOnInit
 {
-    static $inject = ['$scope', 'menuService'];
+    static $inject = ['$scope', 'menuService', 'configService', '$route'];
 
     public heading: string = "Home";
     public menus: Array<string>;
     public siteInfo: siteInfo;
 
-    constructor(public $scope: ng.IScope, public menuService: menuService)
+    constructor(public $scope: ng.IScope, public menuService: menuService, public configService: configService, public $route: ng.route.IRouteService)
     {
 
     }
@@ -24,15 +24,22 @@ class headerBarComponentController implements ng.IOnInit
     $onInit(): void
     {
         let self = this;
-        this.siteInfo = configService.siteInfo;
-        this.menus = this.siteInfo.menus;
+
         var callback = (function (h: string)
         {
             self.changeHeading(h);
         }).bind(this);
 
-        this.menuService.onChange(callback);
-        this.menuService.checkPath();
+        self.configService.getSiteInfo().then(info =>
+        {
+            self.siteInfo = info;
+            self.menus = info.menus;
+
+            self.menus.push('Settings');
+
+            self.menuService.onChange(callback);
+            self.menuService.checkPath();
+        });
     }
 
     public getMenuClass(index: number): string
@@ -69,6 +76,11 @@ class headerBarComponentController implements ng.IOnInit
         this.toggleMenu();
 
         let url = "x/" + menu.toLowerCase();
+        if (menu == 'settings')
+        {
+            url = 'settings';
+        }
+
         url = url.replace(/ /g, '_');
         this.menuService.goto(url);
 

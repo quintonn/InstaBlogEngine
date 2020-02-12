@@ -9,18 +9,23 @@ require("../../appConfig");
 
 class footerComponentController implements ng.IOnInit
 {
-    //static $inject = [];
+    static $inject = ['$scope', 'configService'];
 
     public siteInfo: siteInfo;
 
-    constructor()
+    constructor(public $scope: ng.IScope,   public configService: configService)
     {
         
     }
 
     $onInit(): void
     {
-        this.siteInfo = configService.siteInfo;
+        let self = this;
+        this.configService.getSiteInfo().then(info =>
+        {
+            self.siteInfo = info;
+            self.$scope.$apply();
+        });
     }
 }
 

@@ -10,7 +10,7 @@ require("../../appConfig");
 
 class HomeComponentController implements ng.IOnInit
 {
-    static $inject = ['$scope', '$http', '$location', 'menuService', 'httpService'];
+    static $inject = ['$scope', '$http', '$location', 'menuService', 'httpService', 'configService'];
 
     public items: Array<blogItem>;
     public allItems: Array<blogItem>;
@@ -19,7 +19,7 @@ class HomeComponentController implements ng.IOnInit
 
     constructor(public $scope: ng.IScope, public $http: ng.IHttpService,
         public $location: ng.ILocationService, public menuService: menuService,
-        public httpService: httpService)
+        public httpService: httpService, public configService: configService)
     {
         this.items = [];
         this.allItems = [];
@@ -28,9 +28,15 @@ class HomeComponentController implements ng.IOnInit
 
     $onInit(): void
     {
+        let self = this;
         this.menuService.checkPath();
         this.loadItems();
-        this.info = configService.siteInfo;
+
+        this.configService.getSiteInfo().then(info =>
+        {
+            self.info = info;
+            self.$scope.$apply();
+        });
     }
 
     public selectItem(item: blogItem): void

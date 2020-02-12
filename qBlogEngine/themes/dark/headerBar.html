@@ -8,7 +8,7 @@
         <div class="text-lg sm:text-2xl font-extrabold capitalize nav-header ">{{$ctrl.heading}}</div>
         <div ng-class="$ctrl.getSizeClasses('items-center  h-full absolute menu-close right-0 pt-4 self-center', 'w-full hidden', ' lg:w-auto lg:block')">
             <nav ng-class="$ctrl.getSizeClasses('bg-gray-900 text-2xl font-extrabold text-center w-full flex-col justify-start left-0 top-0','pt-8 h-full flex fixed','lg:pt-0 lg:h-auto lg:block lg:relative')">
-                <div ng-repeat="menu in $ctrl.menus track by $index" ng-click="$ctrl.menuClick(menu)" class="cursor-pointer inline lg:pl-2 lg:pr-4 capitalize border-gray-700" ng-class="$ctrl.getMenuClass($index)">{{menu}}</div>
+                <div ng-repeat="menu in $ctrl.menus track by $index" ng-click="$ctrl.menuClick(menu)" class="capitalize cursor-pointer inline lg:pl-2 lg:pr-4 capitalize border-gray-700" ng-class="$ctrl.getMenuClass($index)">{{menu}}</div>
             </nav>
         </div>
 
