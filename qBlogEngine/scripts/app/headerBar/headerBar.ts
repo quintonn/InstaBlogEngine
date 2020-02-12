@@ -76,7 +76,7 @@ class headerBarComponentController implements ng.IOnInit
         this.toggleMenu();
 
         let url = "x/" + menu.toLowerCase();
-        if (menu == 'settings')
+        if (menu.toLowerCase() == 'settings')
         {
             url = 'settings';
         }
