@@ -89,103 +89,107 @@ class entryComponentController implements ng.IOnInit
         self.httpService.downloadFile(file).then(resp =>
         {
             var newScope = self.$scope.$new(false, self.$scope);
-            var dynamicComponent = self.$compile(resp)(newScope);
-            setTimeout(function ()
+            self.$compile(resp)(newScope, elem =>
             {
                 var x = document.getElementById('divPageContent');
-                angular.element(x).append(dynamicComponent);
 
-                self.$scope.$apply();
-
-                let codeSamples = document.getElementsByClassName('code-sample');
-
-                for (let i = 0; i < codeSamples.length; i++)
+                angular.element(x).append(elem);
+                
+                elem.ready(() =>
                 {
-                    let div = codeSamples[i];
-                    let fileName = div.getAttribute('name').trim().toLowerCase().replace(/ /g, '_');
-                    let classList = div.classList;
-                    let lang = "";
-
-                    for (let i = 0; i < classList.length; i++)
+                    setTimeout(function ()
                     {
-                        let language = classList[i];
-                        if (language.startsWith('language'))
+                        let codeSamples = document.getElementsByClassName('code-sample');
+
+                        for (let i = 0; i < codeSamples.length; i++)
                         {
-                            lang = language.substring(9);
+                            let div = codeSamples[i];
+                            let fileName = div.getAttribute('name').trim().toLowerCase().replace(/ /g, '_');
+                            let classList = div.classList;
+                            let lang = "";
+
+                            for (let i = 0; i < classList.length; i++)
+                            {
+                                let language = classList[i];
+                                if (language.startsWith('language'))
+                                {
+                                    lang = language.substring(9);
+                                }
+                            }
+
+                            var url = "content/" + category + "/" + name + "/" + fileName;
+                            self.httpService.downloadFile(url).then(content =>
+                            {
+                                if (lang != null && lang.trim().length > 0)
+                                {
+                                    let pLang = Prism.languages[lang];
+                                    let code = Prism.highlight(content, pLang, lang);
+                                    div.innerHTML = code;
+                                    Prism.highlightAll();
+                                }
+                                else
+                                {
+                                    div.innerHTML = content;
+                                }
+                            });
                         }
-                    }
 
-                    var url = "content/" + category + "/" + name + "/" + fileName;
-                    self.httpService.downloadFile(url).then(content =>
-                    {
-                        if (lang != null && lang.trim().length > 0)
+                        self.findAndUpdateImageLinks('image', 'x-src', 'src', category, name);
+                        self.findAndUpdateImageLinks('imageRef', 'href', 'href', category, name);
+
+                        if (self.$location.search().scrollTo)
                         {
-                            let pLang = Prism.languages[lang];
-                            let code = Prism.highlight(content, pLang, lang);
-                            div.innerHTML = code;
-                            Prism.highlightAll();
+                            self.$anchorScroll(self.$location.search().scrollTo);
+                        }
+
+                        //Setup disqus:
+                        if (self.siteInfo.disqus && self.siteInfo.disqus.enabled == true)
+                        {
+                            console.log('adding discus to this site with siteName: ' + self.siteInfo.disqus.siteName);
+
+                            let w: any = self.$window;
+
+                            let disqusConfig = function ()
+                            {
+                                this.page.identifier = category + "_" + name;
+                                this.page.url = self.$location.absUrl();
+                            };
+
+                            if (!w.DISQUS)
+                            {
+                                console.log('calling embed, not reset, for disqus');
+
+                                w.disqus_config = disqusConfig;
+
+                                var d = document, s = d.createElement('script');
+
+                                s.src = 'https://' + self.siteInfo.disqus.siteName + '.disqus.com/embed.js';
+                                s.setAttribute('data-timestamp', new Date() + "");
+
+                                (d.head || d.body).appendChild(s);
+                            }
+                            else
+                            {
+                                console.log('calling disqus.reset');
+                                w.DISQUS.reset({
+                                    reload: true,
+                                    config: disqusConfig
+                                });
+                            }
                         }
                         else
                         {
-                            div.innerHTML = content;
+                            console.log('disqus is not configured for this site');
                         }
-                    });
-                }
 
-                self.findAndUpdateImageLinks('image', 'x-src', 'src', category, name);
-                self.findAndUpdateImageLinks('imageRef', 'href', 'href', category, name);
+                        setTimeout(function ()
+                        {
+                            self.$scope.$apply();
+                        }, 100);
 
-                if (self.$location.search().scrollTo)
-                {
-                    self.$anchorScroll(self.$location.search().scrollTo);
-                }
-
-                //Setup disqus:
-                if (self.siteInfo.disqus && self.siteInfo.disqus.enabled == true)
-                {
-                    console.log('adding discus to this site with siteName: ' + self.siteInfo.disqus.siteName);
-
-                    let w: any = self.$window;
-
-                    let disqusConfig = function ()
-                    {
-                        this.page.identifier = category + "_" + name;
-                        this.page.url = self.$location.absUrl();
-                    };
-
-                    if (!w.DISQUS)
-                    {
-                        console.log('calling embed, not reset, for disqus');
-
-                        w.disqus_config = disqusConfig;
-
-                        var d = document, s = d.createElement('script');
-
-                        s.src = 'https://' + self.siteInfo.disqus.siteName + '.disqus.com/embed.js';
-                        s.setAttribute('data-timestamp', new Date() + "");
-
-                        (d.head || d.body).appendChild(s);
-                    }
-                    else
-                    {
-                        console.log('calling disqus.reset');
-                        w.DISQUS.reset({
-                            reload: true,
-                            config: disqusConfig
-                        });
-                    }
-                }
-                else
-                {
-                    console.log('disqus is not configured for this site');
-                }
-
-                setTimeout(function ()
-                {
-                    self.$scope.$apply();
-                }, 100);
-
-            }, 100);
+                    }, 250);
+                });
+            });
         });
     }
 

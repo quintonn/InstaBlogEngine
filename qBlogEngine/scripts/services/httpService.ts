@@ -32,7 +32,14 @@ export class httpService
         {
             if (response.ok == true)
             {
-                return response.text();
+                //return response.text();
+                return new Promise(function (res, rej)
+                {
+                    setTimeout(function ()
+                    {
+                        res(response.text());
+                    }, 100);
+                });
             }
             else
             {
