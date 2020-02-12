@@ -180,6 +180,11 @@ class entryComponentController implements ng.IOnInit
                     console.log('disqus is not configured for this site');
                 }
 
+                setTimeout(function ()
+                {
+                    self.$scope.$apply();
+                }, 100);
+
             }, 100);
         });
     }
