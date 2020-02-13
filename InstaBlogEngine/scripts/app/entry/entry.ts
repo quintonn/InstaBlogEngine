@@ -95,7 +95,7 @@ class entryComponentController implements ng.IOnInit
                 elem.ready(() =>
                 {
                     self.setupDisqusComments(category, name);
-
+                    
                     self.templateService.applyTemplate("content/" + category + "/" + name).then(_ =>
                     {
                         let scrollTo = self.$location.search().scrollTo;
@@ -116,7 +116,6 @@ class entryComponentController implements ng.IOnInit
         let self = this;
 
         let existingTags = document.querySelectorAll('a[href$=' + scrollTo + ']');
-        console.log(existingTags);
 
         if (existingTags == null || existingTags.length == 0)
         {
@@ -124,7 +123,7 @@ class entryComponentController implements ng.IOnInit
             {
                 setTimeout(function ()
                 {
-                    self.attemptToScroll(scrollTo, count++);
+                    self.attemptToScroll(scrollTo, count+1);
                 }, 10);
             }
             return;

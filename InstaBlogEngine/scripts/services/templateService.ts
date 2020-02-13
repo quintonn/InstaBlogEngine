@@ -22,14 +22,18 @@ export class templateService
     {
         let self = this;
 
-        return self.updateCodeSamples(contentPath).then(_ =>
-        {
-            return self.findAndUpdateImageLinks('image', 'x-src', 'src', contentPath);
-        }).then(_ =>
+        var updateCodes = self.updateCodeSamples(contentPath);
+
+        var updateImages = self.findAndUpdateImageLinks('image', 'x-src', 'src', contentPath).then(_ =>
         {
             //"content/" + category + "/" + name
             return self.findAndUpdateImageLinks('imageRef', 'href', 'href', contentPath);
         });
+
+        let p: any = Promise;
+
+        return p.all([updateCodes, updateImages]);
+            
     }
 
     private updateCodeSamples(contentPath: string, count: number = 0): Promise<void>
@@ -45,7 +49,7 @@ export class templateService
                 {
                     setTimeout(function ()
                     {
-                        self.updateCodeSamples(contentPath, count++).then(res);
+                        self.updateCodeSamples(contentPath, count+1).then(res);
                     }, 100);
                 });
             }
@@ -103,7 +107,6 @@ export class templateService
     {
         let self = this;
         let items = document.getElementsByClassName(className);
-
         if (items == null || items.length == 0)
         {
             if (count < 50)
@@ -112,7 +115,7 @@ export class templateService
                 {
                     setTimeout(function ()
                     {
-                        self.findAndUpdateImageLinks(className, srcAttributeName, targetAttributeName, imagePath, count++).then(res);
+                        self.findAndUpdateImageLinks(className, srcAttributeName, targetAttributeName, imagePath, count+1).then(res);
                     }, 100);
                 });
             }
@@ -125,7 +128,6 @@ export class templateService
 
             let source = item.getAttribute(srcAttributeName);
             let fullUrl = window.location.origin + window.location.pathname + imagePath + "/" + source;
-
             item.setAttribute(targetAttributeName, fullUrl);
         }
 
