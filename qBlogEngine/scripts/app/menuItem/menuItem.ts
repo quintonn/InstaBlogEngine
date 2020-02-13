@@ -1,24 +1,21 @@
 ﻿import * as angular from 'angular';
-
-// Path to appConstants might be different depending on your item's location
 import { appConstants } from '../../models/appConstants';
-import { httpService } from '../../services/httpService';
 import { siteInfo } from '../../models/siteInfo';
-
-import Prism from 'prismjs';
-import 'prismjs/themes/prism-okaidia.css';
 import { configService } from '../../services/configService';
+import { httpService } from '../../services/httpService';
+import { templateService } from '../../services/templateService';
 
 require("../../appConfig");
 
 class menuItemComponentController implements ng.IOnInit
 {
-    static $inject = ['$scope', 'httpService', '$compile'];
+    static $inject = ['$scope', 'httpService', '$compile', 'templateService'];
 
     public info: siteInfo;
     public path: string;
 
-    constructor(public $scope: ng.IScope, public httpService: httpService, public $compile: angular.ICompileService)
+    constructor(public $scope: ng.IScope, public httpService: httpService, public $compile: angular.ICompileService,
+        public templateService: templateService)
     {
 
     }
@@ -37,73 +34,21 @@ class menuItemComponentController implements ng.IOnInit
         this.httpService.downloadFile(file).then(resp =>
         {
             var newScope = this.$scope.$new(false, this.$scope);
-            var dynamicComponent = this.$compile(resp)(newScope);
-            setTimeout(function ()
+            self.$compile(resp)(newScope, elem =>
             {
-                var x = document.getElementById('divPageContent');
-                angular.element(x).append(dynamicComponent);
+                let divPageContent = document.getElementById('divPageContent');
 
-                self.$scope.$apply();
+                angular.element(divPageContent).append(elem);
 
-                let codeSamples = document.getElementsByClassName('code-sample');
-
-                for (let i = 0; i < codeSamples.length; i++)
+                elem.ready(() =>
                 {
-                    let div = codeSamples[i];
-                    let fileName = div.getAttribute('name').trim().toLowerCase().replace(/ /g, '_');
-                    let classList = div.classList;
-                    let lang = "";
-
-                    for (let i = 0; i < classList.length; i++)
-                    {
-                        let language = classList[i];
-                        if (language.startsWith('language'))
-                        {
-                            lang = language.substring(9);
-                        }
-                    }
-
-                    var url = "info/" + fileName;
-                    self.httpService.downloadFile(url).then(content =>
-                    {
-                        if (lang != null && lang.trim().length > 0)
-                        {
-                            let pLang = Prism.languages[lang];
-                            let code = Prism.highlight(content, pLang, lang);
-                            div.innerHTML = code;
-                            Prism.highlightAll();
-                        }
-                        else
-                        {
-                            div.innerHTML = content;
-                        }
-                    });
-                }
-
-                self.findAndUpdateImageLinks('image', 'x-src', 'src');
-                self.findAndUpdateImageLinks('imageRef', 'href', 'href');
-
-                self.$scope.$apply();
-            }, 100);
+                    self.templateService.applyTemplate("info");
+                });
+            });
         }).catch(err =>
         {
             console.error(err);
         });
-    }
-
-    private findAndUpdateImageLinks(className: string, srcAttributeName: string, targetAttributeName: string)
-    {
-        let items = document.getElementsByClassName(className);
-
-        for (let i = 0; i < items.length; i++)
-        {
-            let item = items[i];
-
-            let source = item.getAttribute(srcAttributeName);
-            let fullUrl = window.location.origin + window.location.pathname + "info/" + source;
-
-            item.setAttribute(targetAttributeName, fullUrl);
-        }
     }
 }
 
