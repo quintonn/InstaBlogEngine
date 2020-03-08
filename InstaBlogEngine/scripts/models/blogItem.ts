@@ -6,6 +6,7 @@
     title: string;
     date: string;
     author: string;
+    sourceType: string;
 
     constructor(category: string, title: string, name: string = "", tags: string[] = [])
     {

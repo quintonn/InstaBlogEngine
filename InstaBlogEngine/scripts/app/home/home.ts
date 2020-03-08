@@ -89,7 +89,7 @@ class HomeComponentController implements ng.IOnInit
         self.items = [];
         self.allItems = [];
         
-        self.httpService.downloadFile("content/items.json")
+        self.httpService.downloadFile("content/items.json?v=1")
             .then(self.httpService.createBlogItems)
             .catch(err =>
             {

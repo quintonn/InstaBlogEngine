@@ -45,6 +45,12 @@ class listItemComponentController implements ng.IOnInit
             this.hasNumbers = true;
             this.heading = self.number + ".";
         }
+        else if (this.parent.type == "bullet")
+        {
+            this.number = this.parent.count++;
+            this.hasNumbers = true;
+            this.heading = "•";
+        }
     }
 
     

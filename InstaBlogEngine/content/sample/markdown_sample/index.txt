@@ -1,0 +1,44 @@
+﻿# Example Heading
+
+This post was made using markdown instead of html
+
+## Smaller Heading
+
+This is another paragraph but with a smaller heading
+
+It is a bit easier to format  
+content over multiple lines
+
+# Sample Code
+
+It is also a bit easier to add sample code
+
+```json
+{
+  "firstName": "John",
+  "lastName": "Smith",
+  "age": 25
+}
+```
+
+# Another section
+
+**this is** an example of **bold** text
+
+![test 1](random.jpg "Test 2")
+
+# Lists
+
+1. abc
+2. xyz
+4. abc
+
+
+- another
+- list
+- items
+
+
+* another
+* list
+* items

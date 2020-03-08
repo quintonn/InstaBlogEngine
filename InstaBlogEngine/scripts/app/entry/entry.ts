@@ -7,6 +7,7 @@ import { httpService } from '../../services/httpService';
 import { menuService } from '../../services/menuService';
 import { templateService } from '../../services/templateService';
 
+var marked = require('marked');
 
 
 require("../../appConfig");
@@ -27,6 +28,7 @@ class entryComponentController implements ng.IOnInit
     public category: string;
     public date: string;
     public author: string;
+    public sourceType: string;
 
     private siteInfo: siteInfo;
 
@@ -43,11 +45,10 @@ class entryComponentController implements ng.IOnInit
     {
         let self = this;
 
-        let url = 'content/items.json';
+        let url = 'content/items.json?v=2';
         let name = self.name.replace(/_/g, ' ');
 
         this.siteInfo = configService.siteInfo;
-        this.loadContent(self)
 
         this.menuService.checkPath(name);
 
@@ -68,12 +69,15 @@ class entryComponentController implements ng.IOnInit
                     self.category = item.category;
                     self.name = item.name;
                     self.title = item.title;
+                    self.sourceType = item.sourceType || "";
 
                     self.$scope.$apply();
 
                     break;
                 }
             }
+
+            return self.loadContent(self);
         });
     }
 
@@ -81,31 +85,192 @@ class entryComponentController implements ng.IOnInit
     {
         let name = self.name.replace(/ /g, '_').toLowerCase();
         let category = self.category.replace(/ /g, '_').toLowerCase();
-        let file = "content/" + category + "/" + name + "/index.html";
 
+        if (self.sourceType == 'markdown')
+        {
+            self.downloadMarkdown(self, name, category);
+        }
+        else
+        {
+            self.downloadHtml(self, name, category);
+        }
+    }
+
+    private setupMarkdownRenderer(rootPath:string): any
+    {
+        let self = this;
+        let defaultRenderer = new marked.Renderer()
+        const renderer = new marked.Renderer();
+
+        renderer.heading = function (text: string, level: any)
+        {
+            const escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
+
+            if (level == 1)
+            {
+                let headingId = escapedText.toLowerCase().replace(/ /g, '_');
+                let url = window.location.hash.split("?")[0];
+                let sectionUrl = url + "?scrollTo=" + headingId;
+
+                return `
+                    <div class="text-xl lg:text-2xl text-left font-extrabold my-2 md:my-4" ng-attr-id="${headingId}">
+                        <a ng-href="${sectionUrl}">
+                            ${text}
+                        </a>
+                    </div>`;
+            }
+
+            let largeSize = '';
+            let smallSize = '';
+
+            switch (level)
+            {
+                case 1:
+                    largeSize = 'text-xl';
+                    smallSize = 'text-lg';
+                    break;
+                case 2:
+                    largeSize = 'text-lg';
+                    smallSize = 'text-base';
+                    break;
+                case 3:
+                    largeSize = 'text-base';
+                    smallSize = 'text-sm';
+                    break;
+                case 4:
+                    largeSize = 'text-sm';
+                    smallSize = 'text-xs';
+                    break;
+                case 5:
+                case 6:
+                    largeSize = 'text-xs';
+                    smallSize = 'text-xs';
+                    break;
+                default:
+                    largeSize = 'text-lg';
+                    smallSize = 'text-base';
+                    break;
+            }
+
+            return `<div class='${smallSize} lg:${largeSize} text-left font-extrabold my-2 md:my-4'>${text}</div>`;
+        };
+
+        renderer.paragraph = (text : string) =>
+        {
+            return `<div class='text-left'><block>${text}</block></div>`;
+        };
+
+        renderer.code = (code: string, infostring: string, escaped: boolean) =>
+        {
+            let formattedCode = code;
+            if (typeof infostring != 'undefined' && infostring != null && infostring.length > 0)
+            {
+                formattedCode = self.templateService.formatCode(code, infostring);
+            }
+
+            return `<div class='text-left'><block><pre class="language-${infostring}"><code class="language-${infostring} inline-block">${formattedCode}</code></pre></block></div>`;
+        };
+
+        renderer.strong = (text: string) =>
+        {
+            return `<span class="font-bold">${text}</span>`;
+        };
+
+        renderer.image = (href: string, title: string, text: string) =>
+        {
+            let path = href;
+            return `<link-image src="${path}" image-caption="${title}" image-source="${path}"></link-image>`;
+        };
+
+        let listCache: Array<string> = [];
+
+        renderer.list = (body: string, ordered: boolean, start: number) =>
+        {
+            let listType = '';
+            if (ordered == true)
+            {
+                listType = 'type="number"';
+            }
+            else
+            {
+                listType = 'type="bullet"';
+            }
+
+            let content = '';
+            for (let i = 0; i < listCache.length; i++)
+            {
+                let item = `<list-item>${listCache[i]}</list-item>`;
+                content = content + item;
+            }
+
+            let result = `<block class='text-left'><list ${listType}>${content}</list></block>`;
+
+            listCache = [];
+
+            return result;
+        };
+
+        renderer.listitem = (text: string, task: boolean, checked: boolean) =>
+        {
+            listCache.push(text);
+            return '';
+        };
+
+
+
+        return renderer;
+    }
+
+    private downloadMarkdown(self: entryComponentController, name: string, category: string): void
+    {
+        let rootPath = "content/" + category + "/" + name + "/";
+        var renderer = self.setupMarkdownRenderer(rootPath);
+        let file = rootPath + "index.txt";
         self.httpService.downloadFile(file).then(resp =>
         {
-            let newScope = self.$scope.$new(false, self.$scope);
-            self.$compile(resp)(newScope, elem =>
-            {
-                let divPageContent = document.getElementById('divPageContent');
+            var html = marked(resp, { renderer: renderer });
 
-                angular.element(divPageContent).append(elem);
-                
-                elem.ready(() =>
+            self.processHtml(self, html, name, category);
+        });
+    }
+
+    private downloadHtml(self: entryComponentController, name: string, category: string): void
+    {
+        let file = "content/" + category + "/" + name + "/index.html";
+        self.httpService.downloadFile(file).then(resp =>
+        {
+            self.processHtml(self, resp, name, category);
+        });
+    }
+
+    private processHtml(self: entryComponentController, html: string, name: string, category: string)
+    {
+        let newScope = self.$scope.$new(false, self.$scope);
+        self.$compile(html)(newScope, elem =>
+        {
+            let divPageContent = document.getElementById('divPageContent');
+
+            angular.element(divPageContent).append(elem);
+
+            elem.ready(() =>
+            {
+                self.setupDisqusComments(category, name);
+
+                let scrollTo = self.$location.search().scrollTo;
+                if (scrollTo != null && scrollTo.length > 0)
                 {
-                    self.setupDisqusComments(category, name);
-                    
-                    self.templateService.applyTemplate("content/" + category + "/" + name).then(_ =>
+                    self.attemptToScroll(scrollTo);
+                }
+
+                self.templateService.applyTemplate("content/" + category + "/" + name).then(_ =>
+                {
+                    setTimeout(function ()
                     {
-                        let scrollTo = self.$location.search().scrollTo;
                         if (scrollTo != null && scrollTo.length > 0)
                         {
                             self.attemptToScroll(scrollTo);
                         }
-
-                        //self.$scope.$apply();
-                    });
+                    }, 100); // wait 100ms to give images time to load
                 });
             });
         });
@@ -114,21 +279,19 @@ class entryComponentController implements ng.IOnInit
     private attemptToScroll(scrollTo: string, count: number = 0): void
     {
         let self = this;
-
         let existingTags = document.querySelectorAll('a[href$=' + scrollTo + ']');
 
         if (existingTags == null || existingTags.length == 0)
         {
-            if (count < 100)
+            if (count < 20)
             {
                 setTimeout(function ()
                 {
                     self.attemptToScroll(scrollTo, count+1);
-                }, 10);
+                }, 100);
             }
             return;
         }
-            
         self.$anchorScroll(scrollTo);
     }
 
@@ -136,7 +299,7 @@ class entryComponentController implements ng.IOnInit
     {
         let self = this;
         //Setup disqus:
-        if (self.siteInfo.disqus && self.siteInfo.disqus.enabled == true)
+        if (self.siteInfo && self.siteInfo.disqus && self.siteInfo.disqus.enabled == true)
         {
             console.log('adding discus to this site with siteName: ' + self.siteInfo.disqus.siteName);
 

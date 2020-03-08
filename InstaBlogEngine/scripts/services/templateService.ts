@@ -22,18 +22,16 @@ export class templateService
     {
         let self = this;
 
-        var updateCodes = self.updateCodeSamples(contentPath);
-
         var updateImages = self.findAndUpdateImageLinks('image', 'x-src', 'src', contentPath).then(_ =>
         {
             //"content/" + category + "/" + name
             return self.findAndUpdateImageLinks('imageRef', 'href', 'href', contentPath);
         });
 
-        let p: any = Promise;
-
-        return p.all([updateCodes, updateImages]);
-            
+        return updateImages.then(_ =>
+        {
+            return self.updateCodeSamples(contentPath);
+        });
     }
 
     private updateCodeSamples(contentPath: string, count: number = 0): Promise<void>
@@ -43,16 +41,6 @@ export class templateService
 
         if (codeSamples == null || codeSamples.length == 0)
         {
-            if (count < 50)
-            {
-                return new Promise((res, rej) =>
-                {
-                    setTimeout(function ()
-                    {
-                        self.updateCodeSamples(contentPath, count+1).then(res);
-                    }, 100);
-                });
-            }
             return Promise.resolve();
         }
 
@@ -81,8 +69,7 @@ export class templateService
             {
                 if (lang != null && lang.trim().length > 0)
                 {
-                    let pLang = Prism.languages[lang];
-                    let code = Prism.highlight(content, pLang, lang);
+                    let code = self.formatCode(content, lang);
                     div.innerHTML = code;
                     Prism.highlightAll();
                 }
@@ -101,6 +88,13 @@ export class templateService
         {
             return Promise.resolve();
         });
+    }
+
+    public formatCode(code: string, language: string): string
+    {
+        let pLang = Prism.languages[language];
+        let formattedCode = Prism.highlight(code, pLang, language);
+        return formattedCode;
     }
 
     private findAndUpdateImageLinks(className: string, srcAttributeName: string, targetAttributeName: string, imagePath: string, count: number = 0): Promise<void>
