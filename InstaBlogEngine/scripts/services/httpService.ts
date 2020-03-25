@@ -21,8 +21,8 @@ export class httpService
     private static downloadFileInternal(file: string): Promise<string>
     {
         var headers = new Headers();
-        //headers.append('pragma', 'no-cache');
-        //headers.append('cache-control', 'no-cache');
+        headers.append('pragma', 'no-cache');
+        headers.append('cache-control', 'no-cache');
 
         var init = {
             method: 'GET',

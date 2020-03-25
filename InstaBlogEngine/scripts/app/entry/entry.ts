@@ -216,7 +216,10 @@ class entryComponentController implements ng.IOnInit
             return '';
         };
 
-
+        renderer.link = (href: string, title: string, text: string) =>
+        {
+            return `<web-link link="${href}">${text}</web-link>`;
+        };
 
         return renderer;
     }
