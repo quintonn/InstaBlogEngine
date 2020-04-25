@@ -22,14 +22,20 @@ export class templateService
     {
         let self = this;
 
-        var updateImages = self.findAndUpdateImageLinks('image', 'x-src', 'src', contentPath).then(_ =>
+        console.log('updating images');
+        var images = document.getElementsByClassName('image');
+        console.log("found " + images.length + " images in the document");
+        console.log(images);
+        let updateImages = self.findAndUpdateImageLinks('image', 'x-src', 'src', contentPath).then(_ =>
         {
             //"content/" + category + "/" + name
+            console.log('updating images 2');
             return self.findAndUpdateImageLinks('imageRef', 'href', 'href', contentPath);
         });
 
         return updateImages.then(_ =>
         {
+            console.log('updating code samples');
             return self.updateCodeSamples(contentPath);
         });
     }
@@ -103,14 +109,14 @@ export class templateService
         let items = document.getElementsByClassName(className);
         if (items == null || items.length == 0)
         {
-            if (count < 50)
+            if (count < 10)
             {
                 return new Promise((res, rej) =>
                 {
                     setTimeout(function ()
                     {
                         self.findAndUpdateImageLinks(className, srcAttributeName, targetAttributeName, imagePath, count+1).then(res);
-                    }, 100);
+                    }, 10);
                 });
             }
             return Promise.resolve();

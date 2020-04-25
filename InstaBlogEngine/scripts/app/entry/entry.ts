@@ -260,8 +260,10 @@ class entryComponentController implements ng.IOnInit
                 self.setupDisqusComments(category, name);
 
                 let scrollTo = self.$location.search().scrollTo;
+                console.log('scroll to = ' + scrollTo);
                 if (scrollTo != null && scrollTo.length > 0)
                 {
+                    console.log('attempting to scroll');
                     self.attemptToScroll(scrollTo);
                 }
 
@@ -271,6 +273,7 @@ class entryComponentController implements ng.IOnInit
                     {
                         if (scrollTo != null && scrollTo.length > 0)
                         {
+                            console.log('scroll 2');
                             self.attemptToScroll(scrollTo);
                         }
                     }, 100); // wait 100ms to give images time to load
@@ -281,21 +284,35 @@ class entryComponentController implements ng.IOnInit
 
     private attemptToScroll(scrollTo: string, count: number = 0): void
     {
+        console.log('inside attempt to scroll: ' + scrollTo);
         let self = this;
         let existingTags = document.querySelectorAll('a[href$=' + scrollTo + ']');
 
+        console.log('tags:', existingTags);
+
         if (existingTags == null || existingTags.length == 0)
         {
-            if (count < 20)
+            console.log('inside. count = ' + count);
+            if (count < 10)
             {
                 setTimeout(function ()
                 {
+                    console.log('attempt to scroll inside timer');
                     self.attemptToScroll(scrollTo, count+1);
-                }, 100);
+                }, 10);
             }
             return;
         }
-        self.$anchorScroll(scrollTo);
+        
+        //self.$location.hash(scrollTo);
+        //self.$anchorScroll();
+        
+        //self.$location.hash("");
+        setTimeout(function ()
+        {
+            self.$anchorScroll(scrollTo);
+            self.$scope.$apply();
+        }, 10);
     }
 
     private setupDisqusComments(category: string, name: string): void
