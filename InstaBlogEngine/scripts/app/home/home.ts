@@ -69,18 +69,17 @@ class HomeComponentController implements ng.IOnInit
         {
             if (type == "tag")
             {
-                return item.tags.indexOf(value) > -1;
+                return item.tags.filter((tag) =>
+                {
+                    return tag.toUpperCase().indexOf(value.toUpperCase()) > -1;
+                }).length > 0;
             }
             else if (type == "category")
             {
-                return item.category.indexOf(value) > -1;
+                return item.category.toUpperCase().indexOf(value.toUpperCase()) > -1;
             }
             return false;
         });
-        //setTimeout(function ()
-        //{
-        //    history.replaceState('', '', '?filter=' + value);
-        //}, 10);
     }
 
     private loadItems(): void
