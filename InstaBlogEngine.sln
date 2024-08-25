@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29609.76
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35208.52
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "InstaBlogEngine", "InstaBlogEngine\", "{D9D36064-675E-4EB4-AE84-37D194257540}"
 	ProjectSection(WebsiteProperties) = preProject
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.8"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_50012"
 		Debug.AspNetCompiler.PhysicalPath = "InstaBlogEngine\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_50012\"
@@ -27,7 +27,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "InstaBlogEngine", "InstaBlo
 EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "InstaBlog", "..\InstaBlog\", "{0E636C1C-2BBD-47DC-A290-68356EC177B1}"
 	ProjectSection(WebsiteProperties) = preProject
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.8"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_55816"
 		Debug.AspNetCompiler.PhysicalPath = "..\InstaBlog\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_55816\"
@@ -48,7 +48,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "InstaBlog", "..\InstaBlog\"
 EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "QuintonnBlog", "..\QuintonnBlog\", "{FA2B38E6-B0A8-4A93-8682-ABC9065EA493}"
 	ProjectSection(WebsiteProperties) = preProject
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.8"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_54379"
 		Debug.AspNetCompiler.PhysicalPath = "..\QuintonnBlog\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_54379\"

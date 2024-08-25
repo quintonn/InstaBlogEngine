@@ -17,7 +17,7 @@ angular.module(appConstants.appName).config(['$routeProvider', '$sceDelegateProv
         {
             template: function ($routeParams: ng.route.IRouteParamsService)
             {
-                var item = $routeParams.path;
+                let item = $routeParams.path;
                 if (item == null || item.length == 0)
                 {
                     item = "home";
@@ -29,8 +29,8 @@ angular.module(appConstants.appName).config(['$routeProvider', '$sceDelegateProv
             {
                 xx: ['$location', 'menuService', function ($location: ng.ILocationService, menuService: menuService)
                 {
-                    var parts = $location.path().split('/');
-                    var path = parts[parts.length - 1];
+                    let parts = $location.path().split('/');
+                    let path = parts[parts.length - 1];
                     menuService.setHeading(path);
                 }]
             }
@@ -38,7 +38,7 @@ angular.module(appConstants.appName).config(['$routeProvider', '$sceDelegateProv
         {
             template: function ($routeParams: ng.route.IRouteParamsService)
             {
-                var item = $routeParams.path;
+                let item = $routeParams.path;
                 if (item == null || item.length == 0)
                 {
                     item = "home";
@@ -50,7 +50,7 @@ angular.module(appConstants.appName).config(['$routeProvider', '$sceDelegateProv
             {
                 xx: ['$location', 'menuService', function ($location: ng.ILocationService, menuService : menuService)
                 {
-                    var path = $location.path().substr(1);
+                    let path = $location.path().substr(1);
                     menuService.setHeading(path);
                 }]
             }
@@ -69,6 +69,15 @@ angular.module(appConstants.appName).config(['$routeProvider', '$sceDelegateProv
                     }
 
                     return "<" + item + " category='" + category + "' name='" + name + "'></" + item + ">";
+                },
+                resolve:
+                {
+                    xx: ['$location', function ($location: ng.ILocationService)
+                    {
+                        console.log($location);
+                        console.log($location.absUrl());
+                        console.log($location.url());
+                    }]
                 }
             });
     //$locationProvider.html5Mode({ enabled: true, requireBase: false });
