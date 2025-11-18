@@ -14,7 +14,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@fullhuman/postcss-purgecss": "^6.0.0",
+    "@fullhuman/postcss-purgecss": "^7.0.2",
     "@types/angular": "^1.8.9",
     "@types/angular-route": "^1.7.6",
     "@types/marked": "^6.0.0",
